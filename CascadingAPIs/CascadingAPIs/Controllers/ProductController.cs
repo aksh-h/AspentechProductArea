@@ -25,14 +25,13 @@ namespace CascadingAPIs.Controllers
             {
                 con.Open();
             }
-            SqlCommand cmd = new SqlCommand("[dbo].[usp_GetFamilies]", con);
+            SqlCommand cmd = new SqlCommand("GetAspenProductAreaSubarea", con);
             cmd.CommandType = CommandType.StoredProcedure;
             SqlDataReader dr = cmd.ExecuteReader();
             while (dr.Read())
             {
                 Family family = new Family
                 {
-                    ID = Convert.ToInt32(dr["Id"].ToString()),
                     FamilyName = dr["FamilyName"].ToString()
                 };
                 families.Add(family);
@@ -54,7 +53,7 @@ namespace CascadingAPIs.Controllers
             {
                 con.Open();
             }
-            SqlCommand cmd = new SqlCommand("usp_GetProducts", con);
+            SqlCommand cmd = new SqlCommand("GetAspenProductAreaSubarea", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@FamilyName", family);
             SqlDataReader dr = cmd.ExecuteReader();
@@ -62,7 +61,6 @@ namespace CascadingAPIs.Controllers
             {
                 Product product = new Product
                 {
-                    ID = Convert.ToInt32(dr["ID"].ToString()),
                     ProductName = dr["ProductName"].ToString()
                 };
                 ProductsList.Products.Add(product);
@@ -84,7 +82,7 @@ namespace CascadingAPIs.Controllers
             {
                 con.Open();
             }
-            SqlCommand cmd = new SqlCommand("usp_GetAreas", con);
+            SqlCommand cmd = new SqlCommand("GetAspenProductAreaSubarea", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@ProductName", Product);
             SqlDataReader dr = cmd.ExecuteReader();
@@ -113,7 +111,7 @@ namespace CascadingAPIs.Controllers
             {
                 con.Open();
             }
-            SqlCommand cmd = new SqlCommand("usp_GetSubAreas", con);
+            SqlCommand cmd = new SqlCommand("GetAspenProductAreaSubarea", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@AreaName", Area);
             SqlDataReader dr = cmd.ExecuteReader();
@@ -121,38 +119,6 @@ namespace CascadingAPIs.Controllers
             {
                 SubArea city = new SubArea
                 {
-                    SubAreaName = dr["SubAreaName"].ToString()
-                };
-                SubAreaList.SubAreas.Add(city);
-            }
-            if (con.State == ConnectionState.Open)
-            {
-                con.Close();
-            }
-            return Request.CreateResponse(HttpStatusCode.OK, SubAreaList);
-        }
-
-
-        [HttpGet]
-        [Route("api/SubArea/{Product}/{Area}")]
-        public HttpResponseMessage GetSubArea(string Area,string Product)
-        {
-            SubAreaList SubAreaList = new SubAreaList();
-            SubAreaList.SubAreas = new List<SubArea>();
-            if (con.State == ConnectionState.Closed)
-            {
-                con.Open();
-            }
-            SqlCommand cmd = new SqlCommand("usp_GetSubAreasFromSheet", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.Parameters.AddWithValue("@AreaName", Area);
-            cmd.Parameters.AddWithValue("@ProductName", Product);
-            SqlDataReader dr = cmd.ExecuteReader();
-            while (dr.Read())
-            {
-                SubArea city = new SubArea
-                {
-                    //ID = Convert.ToInt32(dr["ID"].ToString()),
                     SubAreaName = dr["SubAreaName"].ToString()
                 };
                 SubAreaList.SubAreas.Add(city);
