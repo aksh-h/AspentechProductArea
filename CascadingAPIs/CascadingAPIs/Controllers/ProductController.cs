@@ -129,5 +129,35 @@ namespace CascadingAPIs.Controllers
             }
             return Request.CreateResponse(HttpStatusCode.OK, SubAreaList);
         }
+
+        [HttpGet]
+        [Route("api/getproductlineandsuite/{FamilyName}/{productName}")]
+        public HttpResponseMessage GetDistinctProductLineAndSuite(string FamilyName, string productName)
+        {
+            List<SuiteAndProductLine> pro = new List<SuiteAndProductLine>();
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("GetSuiteNameAndProductLine", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@FamilyName", FamilyName);
+            cmd.Parameters.AddWithValue("@ProductName", productName);
+            SqlDataReader dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                SuiteAndProductLine p = new SuiteAndProductLine
+                {
+                    ProductLine = dr["ProductLine"].ToString(),
+                    SuiteName = dr["SuiteName"].ToString()
+                };
+                pro.Add(p);
+            }
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+            }
+            return Request.CreateResponse(HttpStatusCode.OK, pro);
+        }
     }
 }

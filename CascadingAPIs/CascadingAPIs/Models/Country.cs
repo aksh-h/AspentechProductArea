@@ -49,4 +49,9 @@ namespace CascadingAPIs.Models
         public string FamilyName { get; set; }
 
     }
+    public class SuiteAndProductLine
+    {
+        public string SuiteName { get; set; }
+        public string ProductLine { get; set; }
+    }
 }
